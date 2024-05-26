@@ -25,7 +25,7 @@ pipeline {
                 script {
                     def dockerImage = 'student-service:latest'
                     dir('C:/ProgramData/Jenkins/.jenkins/workspace/sample/studentservice') {
-                        bat 'docker build -t ${dockerImage} .'
+                        bat "docker build -t ${dockerImage} ."
                     }
                 }
             }
@@ -35,7 +35,9 @@ pipeline {
             steps {
                 script {
                     def dockerImage = 'student-service:latest'
-                    bat 'docker run -d --name student-service -p 8080:8080 ${dockerImage}'
+                    bat 'docker stop student-service || true' // Stop if running
+                    bat 'docker rm student-service || true'   // Remove if exists
+                    bat "docker run -d --name student-service -p 8080:8080 ${dockerImage}"
                 }
             }
         }
