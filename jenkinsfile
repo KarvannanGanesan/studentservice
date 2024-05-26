@@ -31,15 +31,22 @@ pipeline {
             }
         }
 
-        stage('Deploy Docker Container') {
+      
+
+
+ stage('Deploy Docker Container') {
             steps {
                 script {
                     def dockerImage = 'student-service:latest'
-                    bat 'docker stop student-service || true' // Stop if running
-                    bat 'docker rm student-service || true'   // Remove if exists
-                    bat "docker run -d --name student-service -p 8080:8080 ${dockerImage}"
+                    bat '''
+                        @echo off
+                        docker ps -a -q --filter "name=student-service" | findstr . && docker stop student-service
+                        docker ps -a -q --filter "name=student-service" | findstr . && docker rm student-service
+                        docker run -d --name student-service -p 8080:8080 student-service:latest
+                    '''
                 }
             }
         }
+
     }
 }
